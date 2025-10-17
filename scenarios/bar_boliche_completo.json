@@ -1,0 +1,282 @@
+{
+  "scenario_name": "Bar/Boliche - Sistema RFID Completo",
+  "description": "Sistema integral de tarjetas RFID/QR para bar con control de stock y ventas",
+  "rubro": "bar_boliche",
+  "duration_seconds": 28800,
+  "system_type": "rfid_payment",
+  "cards": [
+    {
+      "card_id": "CARD-001001",
+      "card_type": "cliente",
+      "holder_name": "Juan Pérez",
+      "initial_balance": 5000,
+      "discount_percentage": 0
+    },
+    {
+      "card_id": "CARD-001002",
+      "card_type": "vip",
+      "holder_name": "María González",
+      "initial_balance": 10000,
+      "discount_percentage": 15
+    },
+    {
+      "card_id": "CARD-001003",
+      "card_type": "staff",
+      "holder_name": "Carlos Barman",
+      "initial_balance": 0,
+      "discount_percentage": 50,
+      "permissions": ["access_bar", "stock_check"]
+    }
+  ],
+  "products": [
+    {
+      "product_id": "PROD-001",
+      "name": "Cerveza Artesanal",
+      "category": "bebidas_alcoholicas",
+      "price": 450,
+      "stock": 200,
+      "min_stock": 50,
+      "supplier": "Cervecería Local"
+    },
+    {
+      "product_id": "PROD-002",
+      "name": "Fernet Branca 750ml",
+      "category": "bebidas_alcoholicas",
+      "price": 650,
+      "stock": 80,
+      "min_stock": 20,
+      "supplier": "Distribuidora Norte"
+    },
+    {
+      "product_id": "PROD-003",
+      "name": "Coca Cola 500ml",
+      "category": "bebidas_sin_alcohol",
+      "price": 250,
+      "stock": 300,
+      "min_stock": 100
+    },
+    {
+      "product_id": "PROD-004",
+      "name": "Vodka Absolut",
+      "category": "bebidas_alcoholicas",
+      "price": 800,
+      "stock": 50,
+      "min_stock": 15
+    },
+    {
+      "product_id": "PROD-005",
+      "name": "Red Bull",
+      "category": "energizantes",
+      "price": 400,
+      "stock": 150,
+      "min_stock": 40
+    },
+    {
+      "product_id": "PROD-006",
+      "name": "Agua Mineral",
+      "category": "bebidas_sin_alcohol",
+      "price": 200,
+      "stock": 250,
+      "min_stock": 80
+    },
+    {
+      "product_id": "PROD-007",
+      "name": "Whisky JW Red Label",
+      "category": "bebidas_alcoholicas",
+      "price": 1200,
+      "stock": 30,
+      "min_stock": 10
+    }
+  ],
+  "transaction_simulation": {
+    "peak_hours": [22, 23, 0, 1, 2],
+    "transactions_per_hour": {
+      "low": 15,
+      "medium": 40,
+      "high": 80
+    },
+    "popular_combos": [
+      {
+        "name": "Fernet + Coca",
+        "products": ["PROD-002", "PROD-003"],
+        "probability": 0.35
+      },
+      {
+        "name": "Cerveza Simple",
+        "products": ["PROD-001"],
+        "probability": 0.30
+      },
+      {
+        "name": "Vodka + Energizante",
+        "products": ["PROD-004", "PROD-005"],
+        "probability": 0.15
+      }
+    ]
+  },
+  "devices": [
+    {
+      "device_id": "BAR-RFID-001",
+      "name": "Lector RFID Barra Principal",
+      "device_type": "rfid_reader",
+      "location": "Barra Principal",
+      "config": {
+        "read_distance": 10,
+        "multi_read": false
+      }
+    },
+    {
+      "device_id": "BAR-RFID-002",
+      "name": "Lector RFID Barra VIP",
+      "device_type": "rfid_reader",
+      "location": "Sector VIP",
+      "config": {
+        "read_distance": 10,
+        "multi_read": false
+      }
+    },
+    {
+      "device_id": "BAR-RFID-003",
+      "name": "Kiosco Recarga Automática",
+      "device_type": "rfid_recharge",
+      "location": "Entrada Principal",
+      "config": {
+        "payment_methods": ["efectivo", "tarjeta", "qr"]
+      }
+    },
+    {
+      "device_id": "BAR-MOT-001",
+      "name": "Contador Personas Entrada",
+      "device_type": "motion",
+      "location": "Puerta Principal",
+      "config": {
+        "peak_probability": 0.8,
+        "business_hours": [20, 5]
+      }
+    },
+    {
+      "device_id": "BAR-TEMP-001",
+      "name": "Temperatura Cámara Fría",
+      "device_type": "temperature",
+      "location": "Cámara de Bebidas",
+      "config": {
+        "base_temp": 4.0,
+        "amplitude": 1.0,
+        "period": 3600
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "⚠️ Stock Bajo - Reposición Urgente",
+      "description": "Producto por debajo del stock mínimo",
+      "condition": {
+        "product_id": "PROD-001",
+        "operator": "<",
+        "value": 50,
+        "parameter": "stock"
+      },
+      "action": {
+        "type": "alert",
+        "severity": "warning",
+        "message": "⚠️ STOCK BAJO: {product_name} - Quedan {stock} unidades. Min: {min_stock}",
+        "channels": ["whatsapp", "email"]
+      },
+      "priority": 8
+    },
+    {
+      "name": "💳 Saldo Bajo Cliente",
+      "description": "Alerta cuando saldo de tarjeta es bajo",
+      "condition": {
+        "card_type": "cliente",
+        "operator": "<",
+        "value": 500,
+        "parameter": "balance"
+      },
+      "action": {
+        "type": "notify",
+        "channel": "display",
+        "message": "💳 Saldo bajo: ${balance}. Recargue su tarjeta."
+      },
+      "priority": 3
+    },
+    {
+      "name": "🎉 VIP Alto Consumo",
+      "description": "Cliente VIP supera consumo alto en la noche",
+      "condition": {
+        "card_type": "vip",
+        "operator": ">",
+        "value": 15000,
+        "parameter": "daily_spent"
+      },
+      "action": {
+        "type": "notify",
+        "channel": "staff",
+        "message": "🎉 Cliente VIP {holder_name} alto consumo: ${daily_spent}. Ofrecer cortesía."
+      },
+      "priority": 2
+    },
+    {
+      "name": "📊 Cierre de Caja Diario",
+      "description": "Generar reporte automático al cierre",
+      "condition": {
+        "time": "06:00",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "report",
+        "format": "pdf",
+        "include": ["ventas_totales", "stock_vendido", "tarjetas_activas", "top_productos"]
+      },
+      "priority": 5
+    },
+    {
+      "name": "🚨 Tarjeta Bloqueada Intento Uso",
+      "description": "Alerta de uso de tarjeta bloqueada",
+      "condition": {
+        "card_status": "blocked",
+        "action": "use_attempt"
+      },
+      "action": {
+        "type": "alert",
+        "severity": "error",
+        "message": "🚨 Intento de uso de tarjeta bloqueada: {card_id}"
+      },
+      "priority": 9
+    }
+  ],
+  "reports": {
+    "daily_summary": {
+      "metrics": [
+        "total_sales",
+        "total_transactions",
+        "unique_cards_used",
+        "peak_hour",
+        "top_selling_products",
+        "stock_depleted",
+        "revenue_by_category"
+      ],
+      "delivery_time": "06:00",
+      "recipients": ["gerencia@bar.com", "admin@bar.com"]
+    },
+    "weekly_summary": {
+      "metrics": [
+        "weekly_revenue",
+        "customer_retention",
+        "inventory_turnover",
+        "vip_spending_average"
+      ],
+      "delivery_day": "monday",
+      "delivery_time": "08:00"
+    }
+  },
+  "metadata": {
+    "business_hours": "20:00-05:00",
+    "max_capacity": 500,
+    "currency": "ARS",
+    "tax_rate": 0.21,
+    "card_recharge_limits": {
+      "min": 500,
+      "max": 20000
+    }
+  }
+}

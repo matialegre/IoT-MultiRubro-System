@@ -1,0 +1,44 @@
+{
+  "scenario_name": "Carnicería - Monitoreo de Refrigeración",
+  "description": "Sistema completo de monitoreo de temperatura y humedad para cámaras frigoríficas",
+  "rubro": "carniceria",
+  "duration_seconds": 600,
+  "devices": [
+    {
+      "device_id": "CARN-TEMP-001",
+      "name": "Freezer Principal",
+      "device_type": "temperature",
+      "location": "Cámara Frigorífica A",
+      "config": {
+        "base_temp": -18.0,
+        "amplitude": 1.5,
+        "period": 3600,
+        "noise_level": 0.3
+      }
+    },
+    {
+      "device_id": "CARN-HUM-001",
+      "name": "Sensor Humedad",
+      "device_type": "humidity",
+      "location": "Cámara Frigorífica A",
+      "config": {
+        "base_humidity": 75.0
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "Alerta Temperatura Alta",
+      "condition": {
+        "device_id": "CARN-TEMP-001",
+        "operator": ">",
+        "value": -10.0
+      },
+      "action": {
+        "type": "alert",
+        "severity": "critical",
+        "message": "Temperatura del freezer fuera de rango"
+      }
+    }
+  ]
+}

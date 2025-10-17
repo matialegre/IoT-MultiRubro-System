@@ -1,0 +1,234 @@
+{
+  "scenario_name": "Carnicería Premium - Sistema Completo",
+  "description": "Sistema integral de monitoreo HACCP para carnicería con trazabilidad completa",
+  "rubro": "carniceria",
+  "duration_seconds": 86400,
+  "devices": [
+    {
+      "device_id": "CARN-TEMP-001",
+      "name": "Freezer Principal -18°C",
+      "device_type": "temperature",
+      "location": "Cámara Frigorífica A",
+      "config": {
+        "base_temp": -18.0,
+        "amplitude": 1.2,
+        "period": 3600,
+        "noise_level": 0.3,
+        "thermal_inertia": 0.1
+      },
+      "events": [
+        {
+          "time": 28800,
+          "type": "spike",
+          "description": "Apertura puerta - Ingreso mercadería 8 AM",
+          "parameters": {
+            "target_temp": -12.0,
+            "duration": 300
+          }
+        },
+        {
+          "time": 43200,
+          "type": "spike",
+          "description": "Apertura puerta - Extracción productos mediodía",
+          "parameters": {
+            "target_temp": -14.0,
+            "duration": 180
+          }
+        },
+        {
+          "time": 64800,
+          "type": "failure",
+          "description": "Falla temporal compresor - Simulación emergencia",
+          "parameters": {
+            "duration": 600,
+            "temp_rise_rate": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "device_id": "CARN-TEMP-002",
+      "name": "Heladera Exhibición 2-4°C",
+      "device_type": "temperature",
+      "location": "Sala de Ventas - Vitrina 1",
+      "config": {
+        "base_temp": 3.0,
+        "amplitude": 0.8,
+        "period": 2400,
+        "noise_level": 0.2
+      },
+      "events": [
+        {
+          "time": 36000,
+          "type": "spike",
+          "description": "Horario pico - Apertura frecuente",
+          "parameters": {
+            "target_temp": 5.5,
+            "duration": 3600
+          }
+        }
+      ]
+    },
+    {
+      "device_id": "CARN-TEMP-003",
+      "name": "Cámara Maduración 0-2°C",
+      "device_type": "temperature",
+      "location": "Cámara de Maduración",
+      "config": {
+        "base_temp": 1.0,
+        "amplitude": 0.5,
+        "period": 7200,
+        "noise_level": 0.15
+      }
+    },
+    {
+      "device_id": "CARN-HUM-001",
+      "name": "Sensor Humedad Cámara Principal",
+      "device_type": "humidity",
+      "location": "Cámara Frigorífica A",
+      "config": {
+        "base_humidity": 75.0,
+        "temp_correlation": -0.8,
+        "noise_level": 0.1
+      }
+    },
+    {
+      "device_id": "CARN-DOOR-001",
+      "name": "Sensor Puerta Cámara A",
+      "device_type": "motion",
+      "location": "Puerta Cámara Frigorífica A",
+      "config": {
+        "peak_probability": 0.1,
+        "business_hours": [8, 20]
+      }
+    },
+    {
+      "device_id": "CARN-DOOR-002",
+      "name": "Sensor Puerta Cámara Maduración",
+      "device_type": "motion",
+      "location": "Puerta Cámara Maduración",
+      "config": {
+        "peak_probability": 0.05
+      }
+    },
+    {
+      "device_id": "CARN-WEIGHT-001",
+      "name": "Balanza Digital Principal",
+      "device_type": "weight",
+      "location": "Mostrador de Ventas",
+      "config": {
+        "tare_weight": 0.5,
+        "max_weight": 50.0,
+        "noise_level": 0.02
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "🚨 CRÍTICO - Temperatura Freezer Alta",
+      "description": "Temperatura supera -10°C - Riesgo contaminación",
+      "condition": {
+        "device_id": "CARN-TEMP-001",
+        "operator": ">",
+        "value": -10.0,
+        "parameter": "value"
+      },
+      "action": {
+        "type": "alert",
+        "severity": "critical",
+        "message": "⚠️ CRÍTICO: Temperatura freezer {value}°C - Límite: -10°C. Revisar URGENTE.",
+        "channels": ["whatsapp", "email", "sms"]
+      },
+      "priority": 10,
+      "cooldown_seconds": 60,
+      "is_active": true
+    },
+    {
+      "name": "⚠️ Temperatura Freezer Subiendo",
+      "description": "Temperatura acercándose a límite crítico",
+      "condition": {
+        "device_id": "CARN-TEMP-001",
+        "operator": ">",
+        "value": -14.0
+      },
+      "action": {
+        "type": "alert",
+        "severity": "warning",
+        "message": "⚠️ ADVERTENCIA: Temperatura freezer {value}°C subiendo. Monitorear.",
+        "channels": ["email"]
+      },
+      "priority": 7,
+      "cooldown_seconds": 300
+    },
+    {
+      "name": "🚪 Puerta Abierta Prolongada",
+      "description": "Puerta abierta más de 2 minutos",
+      "condition": {
+        "device_id": "CARN-DOOR-001",
+        "operator": "==",
+        "value": 1,
+        "duration_seconds": 120
+      },
+      "action": {
+        "type": "notify",
+        "channel": "whatsapp",
+        "message": "🚪 Puerta de cámara frigorífica permanece abierta. Verificar."
+      },
+      "priority": 5,
+      "cooldown_seconds": 60
+    },
+    {
+      "name": "💧 Humedad Excesiva",
+      "description": "Humedad alta puede causar escarcha",
+      "condition": {
+        "device_id": "CARN-HUM-001",
+        "operator": ">",
+        "value": 85.0
+      },
+      "action": {
+        "type": "alert",
+        "severity": "warning",
+        "message": "💧 Humedad alta en cámara: {value}%. Riesgo de formación de escarcha."
+      },
+      "priority": 4,
+      "cooldown_seconds": 600
+    },
+    {
+      "name": "❄️ Temperatura Óptima Recuperada",
+      "description": "Temperatura vuelve a rango normal",
+      "condition": {
+        "device_id": "CARN-TEMP-001",
+        "operator": "<",
+        "value": -16.0
+      },
+      "action": {
+        "type": "log",
+        "message": "✅ Temperatura normalizada: {value}°C"
+      },
+      "priority": 1
+    },
+    {
+      "name": "🌡️ Heladera Exhibición Alta",
+      "description": "Temperatura heladera de ventas fuera de rango",
+      "condition": {
+        "device_id": "CARN-TEMP-002",
+        "operator": ">",
+        "value": 6.0
+      },
+      "action": {
+        "type": "alert",
+        "severity": "error",
+        "message": "🌡️ ERROR: Heladera exhibición {value}°C - Límite: 6°C. Revisar."
+      },
+      "priority": 8,
+      "cooldown_seconds": 180
+    }
+  ],
+  "metadata": {
+    "compliance": "HACCP",
+    "industry": "food_processing",
+    "safety_critical": true,
+    "data_retention_days": 365,
+    "audit_trail": true
+  }
+}

@@ -1,0 +1,439 @@
+{
+  "scenario_name": "Sistema de Riego Inteligente - Agricultura Urbana",
+  "description": "Control automático de riego basado en sensores múltiples y predicción climática",
+  "rubro": "riego",
+  "duration_seconds": 86400,
+  "zones": [
+    {
+      "zone_id": "ZONE-A",
+      "name": "Huerta de Hortalizas",
+      "area_m2": 50,
+      "soil_type": "franco_arcilloso",
+      "crops": ["lechuga", "tomate", "zanahoria", "acelga"],
+      "optimal_moisture": 50,
+      "min_moisture": 30,
+      "max_moisture": 70,
+      "water_consumption_lh": 25
+    },
+    {
+      "zone_id": "ZONE-B",
+      "name": "Frutales",
+      "area_m2": 80,
+      "soil_type": "franco_arenoso",
+      "crops": ["limonero", "naranjo", "mandarino"],
+      "optimal_moisture": 45,
+      "min_moisture": 25,
+      "max_moisture": 65,
+      "water_consumption_lh": 40
+    },
+    {
+      "zone_id": "ZONE-C",
+      "name": "Jardín Ornamental",
+      "area_m2": 30,
+      "soil_type": "franco",
+      "crops": ["cesped", "rosales", "arbustos"],
+      "optimal_moisture": 55,
+      "min_moisture": 35,
+      "max_moisture": 75,
+      "water_consumption_lh": 20
+    }
+  ],
+  "devices": [
+    {
+      "device_id": "RIEGO-SOIL-A01",
+      "name": "Sensor Humedad Zona A - Punto 1",
+      "device_type": "soil_moisture",
+      "location": "Huerta Hortalizas - Punto 1",
+      "zone": "ZONE-A",
+      "config": {
+        "initial_moisture": 45.0,
+        "evaporation_rate": 1.5,
+        "depth_cm": 20
+      }
+    },
+    {
+      "device_id": "RIEGO-SOIL-A02",
+      "name": "Sensor Humedad Zona A - Punto 2",
+      "device_type": "soil_moisture",
+      "location": "Huerta Hortalizas - Punto 2",
+      "zone": "ZONE-A",
+      "config": {
+        "initial_moisture": 48.0,
+        "evaporation_rate": 1.3,
+        "depth_cm": 20
+      }
+    },
+    {
+      "device_id": "RIEGO-SOIL-B01",
+      "name": "Sensor Humedad Zona B - Punto 1",
+      "device_type": "soil_moisture",
+      "location": "Frutales - Punto 1",
+      "zone": "ZONE-B",
+      "config": {
+        "initial_moisture": 40.0,
+        "evaporation_rate": 2.0,
+        "depth_cm": 30
+      }
+    },
+    {
+      "device_id": "RIEGO-SOIL-B02",
+      "name": "Sensor Humedad Zona B - Punto 2",
+      "device_type": "soil_moisture",
+      "location": "Frutales - Punto 2",
+      "zone": "ZONE-B",
+      "config": {
+        "initial_moisture": 38.0,
+        "evaporation_rate": 2.2,
+        "depth_cm": 30
+      }
+    },
+    {
+      "device_id": "RIEGO-SOIL-C01",
+      "name": "Sensor Humedad Zona C",
+      "device_type": "soil_moisture",
+      "location": "Jardín Ornamental",
+      "zone": "ZONE-C",
+      "config": {
+        "initial_moisture": 52.0,
+        "evaporation_rate": 1.8,
+        "depth_cm": 15
+      }
+    },
+    {
+      "device_id": "RIEGO-TEMP-001",
+      "name": "Temperatura Ambiente",
+      "device_type": "temperature",
+      "location": "Exterior Central",
+      "config": {
+        "base_temp": 24.0,
+        "amplitude": 10.0,
+        "period": 86400
+      }
+    },
+    {
+      "device_id": "RIEGO-HUM-001",
+      "name": "Humedad Ambiental",
+      "device_type": "humidity",
+      "location": "Exterior Central",
+      "config": {
+        "base_humidity": 60.0,
+        "temp_correlation": -0.7
+      }
+    },
+    {
+      "device_id": "RIEGO-FLOW-A",
+      "name": "Caudalímetro Zona A",
+      "device_type": "flow",
+      "location": "Válvula Zona A",
+      "zone": "ZONE-A",
+      "config": {
+        "max_flow": 50
+      }
+    },
+    {
+      "device_id": "RIEGO-FLOW-B",
+      "name": "Caudalímetro Zona B",
+      "device_type": "flow",
+      "location": "Válvula Zona B",
+      "zone": "ZONE-B",
+      "config": {
+        "max_flow": 80
+      }
+    },
+    {
+      "device_id": "RIEGO-FLOW-C",
+      "name": "Caudalímetro Zona C",
+      "device_type": "flow",
+      "location": "Válvula Zona C",
+      "zone": "ZONE-C",
+      "config": {
+        "max_flow": 40
+      }
+    },
+    {
+      "device_id": "RIEGO-TANK-001",
+      "name": "Nivel Tanque Principal",
+      "device_type": "distance",
+      "location": "Tanque de Agua 1000L",
+      "config": {
+        "tank_height_cm": 150,
+        "tank_capacity_l": 1000
+      }
+    },
+    {
+      "device_id": "RIEGO-RAIN-001",
+      "name": "Pluviómetro",
+      "device_type": "rain_gauge",
+      "location": "Techo",
+      "config": {
+        "resolution_mm": 0.2
+      }
+    }
+  ],
+  "actuators": [
+    {
+      "actuator_id": "VALVE-A",
+      "name": "Electroválvula Zona A",
+      "type": "solenoid_valve",
+      "zone": "ZONE-A",
+      "power": "24V DC",
+      "flow_capacity_lh": 50
+    },
+    {
+      "actuator_id": "VALVE-B",
+      "name": "Electroválvula Zona B",
+      "type": "solenoid_valve",
+      "zone": "ZONE-B",
+      "power": "24V DC",
+      "flow_capacity_lh": 80
+    },
+    {
+      "actuator_id": "VALVE-C",
+      "name": "Electroválvula Zona C",
+      "type": "solenoid_valve",
+      "zone": "ZONE-C",
+      "power": "24V DC",
+      "flow_capacity_lh": 40
+    },
+    {
+      "actuator_id": "PUMP-001",
+      "name": "Bomba de Agua Principal",
+      "type": "water_pump",
+      "power": "220V AC",
+      "flow_capacity_lh": 200,
+      "pressure_bar": 3.0
+    }
+  ],
+  "irrigation_schedule": {
+    "programs": [
+      {
+        "program_id": "PROG-MORNING",
+        "name": "Riego Matutino",
+        "time": "06:00",
+        "duration_minutes": 30,
+        "zones": ["ZONE-A", "ZONE-B", "ZONE-C"],
+        "enabled": true,
+        "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      },
+      {
+        "program_id": "PROG-EVENING",
+        "name": "Riego Vespertino",
+        "time": "18:00",
+        "duration_minutes": 25,
+        "zones": ["ZONE-A", "ZONE-B"],
+        "enabled": true,
+        "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      }
+    ]
+  },
+  "rules": [
+    {
+      "name": "💧 Riego Automático Zona A - Humedad Baja",
+      "description": "Activar riego cuando humedad promedio < 30%",
+      "condition": {
+        "and": [
+          {
+            "device_id": "RIEGO-SOIL-A01",
+            "operator": "<",
+            "value": 30.0
+          },
+          {
+            "device_id": "RIEGO-SOIL-A02",
+            "operator": "<",
+            "value": 30.0
+          }
+        ]
+      },
+      "action": {
+        "type": "actuate",
+        "target": "VALVE-A",
+        "command": "open",
+        "duration": 1800,
+        "parameters": {
+          "flow_rate": "medium"
+        }
+      },
+      "priority": 10,
+      "cooldown_seconds": 3600,
+      "is_active": true
+    },
+    {
+      "name": "💧 Riego Automático Zona B - Humedad Baja",
+      "description": "Activar riego frutales cuando humedad < 25%",
+      "condition": {
+        "device_id": "RIEGO-SOIL-B01",
+        "operator": "<",
+        "value": 25.0
+      },
+      "action": {
+        "type": "actuate",
+        "target": "VALVE-B",
+        "command": "open",
+        "duration": 2400
+      },
+      "priority": 10,
+      "cooldown_seconds": 3600
+    },
+    {
+      "name": "☀️ Suspender Riego - Temperatura Alta",
+      "description": "No regar en horas de sol intenso (T > 32°C)",
+      "condition": {
+        "and": [
+          {
+            "device_id": "RIEGO-TEMP-001",
+            "operator": ">",
+            "value": 32.0
+          },
+          {
+            "time_range": ["11:00", "16:00"]
+          }
+        ]
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_valves",
+        "command": "close",
+        "reason": "temperatura_alta"
+      },
+      "priority": 9
+    },
+    {
+      "name": "🌧️ Suspender Riego - Lluvia Detectada",
+      "description": "Cancelar riego si está lloviendo",
+      "condition": {
+        "device_id": "RIEGO-RAIN-001",
+        "operator": ">",
+        "value": 1.0,
+        "parameter": "rate_mmh"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_valves",
+        "command": "close",
+        "reason": "lluvia_activa"
+      },
+      "priority": 10
+    },
+    {
+      "name": "⚠️ Nivel Tanque Bajo",
+      "description": "Alertar cuando nivel de agua es bajo",
+      "condition": {
+        "device_id": "RIEGO-TANK-001",
+        "operator": "<",
+        "value": 20.0,
+        "parameter": "level_percentage"
+      },
+      "action": {
+        "type": "alert",
+        "severity": "warning",
+        "message": "⚠️ Nivel de agua bajo: {value}%. Reabastecer tanque."
+      },
+      "priority": 8
+    },
+    {
+      "name": "🚨 Tanque Vacío - Suspender Riego",
+      "description": "Detener todo riego si tanque está vacío",
+      "condition": {
+        "device_id": "RIEGO-TANK-001",
+        "operator": "<",
+        "value": 5.0,
+        "parameter": "level_percentage"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_valves",
+        "command": "close",
+        "reason": "tanque_vacio"
+      },
+      "priority": 10
+    },
+    {
+      "name": "📊 Reporte Semanal Consumo Agua",
+      "description": "Informe de consumo y eficiencia",
+      "condition": {
+        "time": "sunday 20:00",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "report",
+        "format": "pdf",
+        "include": [
+          "consumo_total_litros",
+          "consumo_por_zona",
+          "dias_regados",
+          "humedad_promedio",
+          "ahorro_vs_manual",
+          "recomendaciones"
+        ]
+      },
+      "priority": 5
+    },
+    {
+      "name": "💚 Riego Eficiente - Hora Óptima",
+      "description": "Regar solo en horas de baja evaporación",
+      "condition": {
+        "and": [
+          {
+            "time_range": ["05:00", "08:00"],
+            "or": ["17:00", "20:00"]
+          },
+          {
+            "device_id": "RIEGO-TEMP-001",
+            "operator": "<",
+            "value": 28.0
+          }
+        ]
+      },
+      "action": {
+        "type": "optimize",
+        "parameter": "irrigation_timing",
+        "value": "enabled"
+      },
+      "priority": 6
+    }
+  ],
+  "weather_integration": {
+    "enabled": true,
+    "api": "openweathermap",
+    "forecast_hours": 48,
+    "rain_threshold_mm": 5,
+    "actions": {
+      "rain_forecast": "skip_next_irrigation",
+      "high_temp_forecast": "increase_morning_irrigation",
+      "wind_forecast": "reduce_irrigation_duration"
+    }
+  },
+  "analytics": {
+    "metrics": [
+      "water_consumption_daily",
+      "water_saved_vs_manual",
+      "average_soil_moisture_by_zone",
+      "irrigation_events_count",
+      "crop_health_index",
+      "system_efficiency_percentage"
+    ],
+    "alerts": {
+      "unusual_consumption": {
+        "threshold": 1.5,
+        "type": "multiplier",
+        "action": "investigate_leak"
+      },
+      "low_efficiency": {
+        "threshold": 0.7,
+        "type": "percentage",
+        "action": "check_sensors"
+      }
+    }
+  },
+  "metadata": {
+    "location": "Buenos Aires, Argentina",
+    "coordinates": {
+      "lat": -34.6037,
+      "lon": -58.3816
+    },
+    "installation_date": "2025-01-01",
+    "water_source": "tanque_reserva",
+    "total_area_m2": 160,
+    "estimated_savings_percentage": 40
+  }
+}

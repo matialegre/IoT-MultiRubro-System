@@ -1,0 +1,67 @@
+{
+  "scenario_name": "Sistema de Riego Automatizado",
+  "description": "Control inteligente de riego basado en humedad del suelo y condiciones climáticas",
+  "rubro": "riego",
+  "duration_seconds": 600,
+  "devices": [
+    {
+      "device_id": "RIEGO-SOIL-A01",
+      "name": "Sensor Humedad Zona A",
+      "device_type": "soil_moisture",
+      "location": "Huerta Zona A",
+      "config": {
+        "initial_moisture": 45.0,
+        "evaporation_rate": 1.5
+      }
+    },
+    {
+      "device_id": "RIEGO-SOIL-B01",
+      "name": "Sensor Humedad Zona B",
+      "device_type": "soil_moisture",
+      "location": "Huerta Zona B",
+      "config": {
+        "initial_moisture": 35.0,
+        "evaporation_rate": 2.0
+      }
+    },
+    {
+      "device_id": "RIEGO-TEMP-001",
+      "name": "Sensor Temperatura Ambiente",
+      "device_type": "temperature",
+      "location": "Exterior",
+      "config": {
+        "base_temp": 24.0,
+        "amplitude": 8.0,
+        "period": 86400
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "Riego Automático Zona A",
+      "condition": {
+        "device_id": "RIEGO-SOIL-A01",
+        "operator": "<",
+        "value": 30.0
+      },
+      "action": {
+        "type": "actuate",
+        "target": "VALVE-A01",
+        "command": "open"
+      }
+    },
+    {
+      "name": "Riego Automático Zona B",
+      "condition": {
+        "device_id": "RIEGO-SOIL-B01",
+        "operator": "<",
+        "value": 30.0
+      },
+      "action": {
+        "type": "actuate",
+        "target": "VALVE-B01",
+        "command": "open"
+      }
+    }
+  ]
+}

@@ -1,0 +1,507 @@
+/* ============================================
+   IoT Multi-Rubro System - Custom Styles
+   ============================================/* IoT Multi-Rubro - Enhanced Styles */
+
+:root {
+    --primary-color: #0d6efd;
+    --primary-dark: #0a58ca;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #0dcaf0;
+    --dark-color: #212529;
+    --light-color: #f8f9fa;
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --gradient-danger: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+    --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    margin: 0 5px;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+#connection-status .pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================
+   STAT CARDS
+   ============================================/* Stats Cards - Enhanced */
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    border: none;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--gradient-primary);
+    transform: scaleX(0);
+    transition: var(--transition-normal);
+}
+
+.stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+.stat-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card.stat-primary {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.stat-card.stat-success {
+    background: var(--gradient-success);
+    color: white;
+}
+
+.stat-card.stat-danger {
+    background: var(--gradient-danger);
+    color: white;
+}
+
+.stat-card.stat-info {
+    background: var(--gradient-info);
+    color: white;
+}
+
+.stat-card .card-title {
+    font-weight: 700;
+    font-size: 2.5rem;
+}
+
+.stat-card .card-subtitle {
+    opacity: 0.9;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.stat-icon {
+    opacity: 0.3;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 2px solid var(--light-color);
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+/* ============================================
+   DEVICE GRID
+   ============================================ */
+.device-item {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.device-item:hover {
+    border-color: var(--primary-color);
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.device-item.online {
+    border-left: 4px solid var(--success-color);
+}
+
+.device-item.offline {
+    border-left: 4px solid var(--danger-color);
+    opacity: 0.7;
+}
+
+.device-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.device-unit {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.device-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.device-type {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* ============================================
+   CURRENT VALUES LIST
+   ============================================ */
+.current-value-item {
+    border-left: 4px solid var(--primary-color);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.current-value-item .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+}
+
+.current-value-item .label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.current-value-item .timestamp {
+    font-size: 0.75rem;
+    color: #adb5bd;
+}
+
+/* ============================================
+   RULES
+   ============================================ */
+.rule-item {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: white;
+}
+
+.rule-item.active {
+    border-left: 4px solid var(--success-color);
+}
+
+.rule-item.inactive {
+    border-left: 4px solid #6c757d;
+    opacity: 0.6;
+}
+
+.rule-condition {
+    background-color: #e7f3ff;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.rule-action {
+    background-color: #fff3cd;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   ALERTS
+   ============================================ */
+.alert-item {
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid;
+}
+
+.alert-item.severity-info {
+    border-left-color: var(--info-color);
+    background-color: #e7f3ff;
+}
+
+.alert-item.severity-warning {
+    border-left-color: var(--warning-color);
+    background-color: #fff8e1;
+}
+
+.alert-item.severity-error {
+    border-left-color: #ff9800;
+    background-color: #ffe0b2;
+}
+
+.alert-item.severity-critical {
+    border-left-color: var(--danger-color);
+    background-color: #ffebee;
+}
+
+.alert-item.acknowledged {
+    opacity: 0.6;
+}
+
+.alert-timestamp {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+.badge {
+    padding: 0.35em 0.65em;
+    font-weight: 600;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+    border: none;
+}
+
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* ============================================
+   MODALS
+   ============================================ */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 2px solid var(--light-color);
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-footer {
+    border-top: 2px solid var(--light-color);
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+/* ============================================
+   CHARTS
+   ============================================ */
+canvas {
+    max-height: 400px;
+}
+
+/* ============================================
+   LOADING SPINNER
+   ============================================ */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+/* ============================================
+   STATUS INDICATORS
+   ============================================ */
+.status-online {
+    color: var(--success-color);
+}
+
+.status-offline {
+    color: var(--danger-color);
+}
+
+.status-error {
+    color: #ff9800;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+    .stat-card .card-title {
+        font-size: 2rem;
+    }
+    
+    .device-value {
+        font-size: 1.5rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-primary-custom {
+    color: var(--primary-color) !important;
+}
+
+.bg-primary-custom {
+    background-color: var(--primary-color) !important;
+}
+
+.shadow-custom {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.border-radius-custom {
+    border-radius: 12px !important;
+}

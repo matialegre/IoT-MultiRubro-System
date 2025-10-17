@@ -1,0 +1,303 @@
+╔═══════════════════════════════════════════════════════════════════════╗
+║                                                                       ║
+║         COMANDOS DE INICIO - IoT Multi-Rubro System                  ║
+║         ============================================                  ║
+║                                                                       ║
+╚═══════════════════════════════════════════════════════════════════════╝
+
+📋 CONTENIDO:
+  1. Instalación Inicial
+  2. Comandos de Inicio
+  3. Comandos de Validación
+  4. Comandos de Gestión
+  5. Solución de Problemas
+
+═══════════════════════════════════════════════════════════════════════
+
+1️⃣ INSTALACIÓN INICIAL (Solo primera vez)
+═══════════════════════════════════════════════════════════════════════
+
+Windows PowerShell:
+-------------------
+cd C:\Users\Mundo Outdoor\CascadeProjects\IoT-MultiRubro-System
+cd backend_api
+pip install -r requirements.txt
+
+Linux/Mac:
+----------
+cd ~/CascadeProjects/IoT-MultiRubro-System
+cd backend_api
+pip3 install -r requirements.txt
+
+
+═══════════════════════════════════════════════════════════════════════
+
+2️⃣ COMANDOS DE INICIO
+═══════════════════════════════════════════════════════════════════════
+
+🚀 OPCIÓN A: Inicio Automático (Recomendado)
+--------------------------------------------
+Windows:
+    python scripts\start_simulation.py
+
+Linux/Mac:
+    python3 scripts/start_simulation.py
+
+
+🔧 OPCIÓN B: Inicio Manual
+---------------------------
+Windows:
+    cd backend_api
+    python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+Linux/Mac:
+    cd backend_api
+    python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+
+🐋 OPCIÓN C: Docker
+-------------------
+    docker-compose up -d
+
+
+📱 Acceder al Dashboard:
+-----------------------
+    URL: http://localhost:8000
+    Usuario: admin
+    Password: admin123
+
+
+═══════════════════════════════════════════════════════════════════════
+
+3️⃣ COMANDOS DE VALIDACIÓN
+═══════════════════════════════════════════════════════════════════════
+
+🧪 Validar Sistema Completo:
+---------------------------
+Windows:
+    python scripts\validate_system.py
+
+Linux/Mac:
+    python3 scripts/validate_system.py
+
+
+🔍 Health Check (con servidor corriendo):
+-----------------------------------------
+    curl http://localhost:8000/health
+
+
+📊 Ver Estadísticas:
+-------------------
+    curl http://localhost:8000/api/stats
+
+
+📡 Listar Dispositivos:
+----------------------
+    curl http://localhost:8000/api/devices
+
+
+🧪 Ejecutar Tests:
+-----------------
+Windows:
+    cd tests
+    python -m pytest test_api.py -v
+
+Linux/Mac:
+    cd tests
+    python3 -m pytest test_api.py -v
+
+
+═══════════════════════════════════════════════════════════════════════
+
+4️⃣ COMANDOS DE GESTIÓN
+═══════════════════════════════════════════════════════════════════════
+
+🛑 Detener Servidor:
+-------------------
+    Presionar: Ctrl + C
+
+
+🔄 Reiniciar Base de Datos:
+--------------------------
+Windows:
+    del backend_api\iot_multirubro.db
+    python scripts\start_simulation.py
+
+Linux/Mac:
+    rm backend_api/iot_multirubro.db
+    python3 scripts/start_simulation.py
+
+
+📦 Actualizar Dependencias:
+--------------------------
+    cd backend_api
+    pip install --upgrade -r requirements.txt
+
+
+🐳 Docker - Ver Logs:
+--------------------
+    docker-compose logs -f backend
+
+
+🐳 Docker - Detener:
+-------------------
+    docker-compose down
+
+
+═══════════════════════════════════════════════════════════════════════
+
+5️⃣ SOLUCIÓN DE PROBLEMAS
+═══════════════════════════════════════════════════════════════════════
+
+❌ Error: "Module not found"
+---------------------------
+Solución:
+    cd backend_api
+    pip install -r requirements.txt
+
+
+❌ Error: "Port 8000 already in use"
+-----------------------------------
+Windows:
+    netstat -ano | findstr :8000
+    taskkill /PID <PID_NUMBER> /F
+
+Linux/Mac:
+    lsof -ti:8000 | xargs kill -9
+
+
+❌ Error: "Database is locked"
+------------------------------
+Solución:
+    1. Cerrar todas las instancias del servidor
+    2. Eliminar archivo: backend_api/iot_multirubro.db
+    3. Reiniciar: python scripts/start_simulation.py
+
+
+❌ Dashboard no carga datos
+---------------------------
+Solución:
+    1. Verificar que el servidor esté corriendo
+    2. Abrir consola del navegador (F12)
+    3. Buscar errores de WebSocket
+    4. Refrescar página: Ctrl + F5
+
+
+❌ WebSocket no conecta
+-----------------------
+Solución:
+    1. Verificar URL: ws://localhost:8000/ws/realtime
+    2. Deshabilitar extensiones del navegador
+    3. Probar en navegador Incógnito
+
+
+═══════════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTACIÓN COMPLETA
+═══════════════════════════════════════════════════════════════════════
+
+📄 Documentos Disponibles:
+--------------------------
+    - README.md                  → Documentación principal (inglés)
+    - RESUMEN_EJECUTIVO.md       → Resumen completo (español)
+    - docs/QUICK_START.md        → Guía rápida
+    - docs/API_REFERENCE.md      → API completa
+    - docs/ARCHITECTURE.md       → Arquitectura técnica
+
+
+🌐 Documentación Interactiva:
+-----------------------------
+    http://localhost:8000/docs       → Swagger UI
+    http://localhost:8000/redoc      → ReDoc
+
+
+═══════════════════════════════════════════════════════════════════════
+
+🔗 ENLACES ÚTILES (con servidor corriendo)
+═══════════════════════════════════════════════════════════════════════
+
+    Dashboard:        http://localhost:8000
+    API Docs:         http://localhost:8000/docs
+    Health Check:     http://localhost:8000/health
+    Statistics:       http://localhost:8000/api/stats
+    WebSocket:        ws://localhost:8000/ws/realtime
+
+
+═══════════════════════════════════════════════════════════════════════
+
+⚙️ CONFIGURACIÓN AVANZADA
+═══════════════════════════════════════════════════════════════════════
+
+🔄 Cambiar de Simulación a Hardware Real:
+----------------------------------------
+    Editar: backend_api/config.py
+    
+    # Cambiar esta línea:
+    SIM_MODE = True    →   SIM_MODE = False
+
+
+🗄️ Cambiar a SQL Server (Producción):
+-------------------------------------
+    Editar: backend_api/config.py
+    
+    DATABASE_URL = "mssql+pyodbc://user:pass@server/db?driver=..."
+
+
+📊 Ajustar Tasa de Actualización:
+--------------------------------
+    Editar: backend_api/config.py
+    
+    SIMULATOR_UPDATE_RATE = 1.0  # Segundos entre lecturas
+
+
+═══════════════════════════════════════════════════════════════════════
+
+💡 TIPS RÁPIDOS
+═══════════════════════════════════════════════════════════════════════
+
+✓ Usa Ctrl+F5 para refrescar el dashboard y ver cambios
+✓ Los logs del servidor se guardan en: backend_api/iot_multirubro.log
+✓ La base de datos SQLite está en: backend_api/iot_multirubro.db
+✓ Puedes tener múltiples navegadores abiertos simultáneamente
+✓ El sistema auto-genera 4 dispositivos demo al iniciar
+
+
+═══════════════════════════════════════════════════════════════════════
+
+✅ CHECKLIST DE INICIO
+═══════════════════════════════════════════════════════════════════════
+
+[ ] 1. Dependencias instaladas
+[ ] 2. Servidor iniciado sin errores
+[ ] 3. Dashboard accesible en http://localhost:8000
+[ ] 4. Login exitoso (admin/admin123)
+[ ] 5. Dispositivos visibles en dashboard
+[ ] 6. Gráficos actualizándose en tiempo real
+[ ] 7. WebSocket conectado (indicador verde)
+[ ] 8. Validación pasada (scripts/validate_system.py)
+
+
+═══════════════════════════════════════════════════════════════════════
+
+📞 SOPORTE
+═══════════════════════════════════════════════════════════════════════
+
+Si tienes problemas:
+    1. Revisa este archivo
+    2. Lee docs/QUICK_START.md
+    3. Ejecuta: python scripts/validate_system.py
+    4. Revisa logs: backend_api/iot_multirubro.log
+
+
+═══════════════════════════════════════════════════════════════════════
+
+🎉 ¡Sistema Listo!
+═══════════════════════════════════════════════════════════════════════
+
+    Ejecuta: python scripts\start_simulation.py
+    Abre: http://localhost:8000
+    Usuario: admin | Password: admin123
+
+    ¡Disfruta del Sistema IoT Multi-Rubro!
+
+═══════════════════════════════════════════════════════════════════════

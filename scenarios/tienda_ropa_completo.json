@@ -1,0 +1,447 @@
+{
+  "scenario_name": "Tienda de Ropa - Sistema Inteligente de Retail",
+  "description": "Control automático de iluminación, climatización y análisis de flujo de clientes",
+  "rubro": "tienda_ropa",
+  "duration_seconds": 43200,
+  "store_info": {
+    "name": "Moda Urbana",
+    "area_m2": 120,
+    "sections": ["casual", "formal", "deportivo", "accesorios"],
+    "opening_hours": "10:00-21:00",
+    "employees": 4
+  },
+  "devices": [
+    {
+      "device_id": "TIENDA-MOT-001",
+      "name": "Contador Entrada Principal",
+      "device_type": "motion",
+      "location": "Puerta Principal",
+      "config": {
+        "peak_probability": 0.6,
+        "business_hours": [10, 21],
+        "direction_detection": true
+      }
+    },
+    {
+      "device_id": "TIENDA-MOT-002",
+      "name": "Sensor Movimiento Probadores",
+      "device_type": "motion",
+      "location": "Área de Probadores",
+      "config": {
+        "peak_probability": 0.4,
+        "business_hours": [10, 21]
+      }
+    },
+    {
+      "device_id": "TIENDA-LUX-001",
+      "name": "Sensor Luminosidad Entrada",
+      "device_type": "luminosity",
+      "location": "Sector Entrada",
+      "config": {
+        "natural_light": true,
+        "artificial_lux": 800
+      }
+    },
+    {
+      "device_id": "TIENDA-LUX-002",
+      "name": "Sensor Luminosidad Casual",
+      "device_type": "luminosity",
+      "location": "Sector Casual",
+      "config": {
+        "artificial_lux": 900
+      }
+    },
+    {
+      "device_id": "TIENDA-LUX-003",
+      "name": "Sensor Luminosidad Formal",
+      "device_type": "luminosity",
+      "location": "Sector Formal",
+      "config": {
+        "artificial_lux": 1000
+      }
+    },
+    {
+      "device_id": "TIENDA-LUX-004",
+      "name": "Sensor Luminosidad Vidriera",
+      "device_type": "luminosity",
+      "location": "Vidriera Principal",
+      "config": {
+        "natural_light": true,
+        "artificial_lux": 1200
+      }
+    },
+    {
+      "device_id": "TIENDA-TEMP-001",
+      "name": "Temperatura Ambiente",
+      "device_type": "temperature",
+      "location": "Sala Principal",
+      "config": {
+        "base_temp": 22.0,
+        "amplitude": 2.0,
+        "period": 7200
+      }
+    },
+    {
+      "device_id": "TIENDA-HUM-001",
+      "name": "Humedad Ambiente",
+      "device_type": "humidity",
+      "location": "Sala Principal",
+      "config": {
+        "base_humidity": 55.0,
+        "temp_correlation": -0.6
+      }
+    },
+    {
+      "device_id": "TIENDA-ENERGY-001",
+      "name": "Medidor Consumo Eléctrico",
+      "device_type": "power_meter",
+      "location": "Tablero Principal",
+      "config": {
+        "max_power_kw": 15.0
+      }
+    }
+  ],
+  "actuators": [
+    {
+      "actuator_id": "LIGHT-ZONE-1",
+      "name": "Iluminación Sector Entrada",
+      "type": "dimmer_led",
+      "power_w": 200,
+      "controllable": true,
+      "dimming_range": [0, 100]
+    },
+    {
+      "actuator_id": "LIGHT-ZONE-2",
+      "name": "Iluminación Sector Casual",
+      "type": "dimmer_led",
+      "power_w": 300,
+      "controllable": true,
+      "dimming_range": [0, 100]
+    },
+    {
+      "actuator_id": "LIGHT-ZONE-3",
+      "name": "Iluminación Sector Formal",
+      "type": "dimmer_led",
+      "power_w": 300,
+      "controllable": true,
+      "dimming_range": [0, 100]
+    },
+    {
+      "actuator_id": "LIGHT-VIDRIERA",
+      "name": "Iluminación Vidriera",
+      "type": "rgb_led",
+      "power_w": 400,
+      "controllable": true,
+      "color_modes": ["warm", "cool", "dynamic"]
+    },
+    {
+      "actuator_id": "HVAC-001",
+      "name": "Aire Acondicionado Central",
+      "type": "hvac_system",
+      "power_w": 3000,
+      "cooling_capacity_btu": 18000,
+      "heating_capacity_btu": 15000
+    }
+  ],
+  "customer_flow_analysis": {
+    "metrics": [
+      "total_visitors_daily",
+      "peak_hours",
+      "average_stay_time_minutes",
+      "conversion_rate_percentage",
+      "traffic_by_section",
+      "fitting_room_usage"
+    ],
+    "patterns": {
+      "weekday": {
+        "morning": 15,
+        "lunch": 35,
+        "afternoon": 25,
+        "evening": 45
+      },
+      "weekend": {
+        "morning": 40,
+        "lunch": 60,
+        "afternoon": 55,
+        "evening": 50
+      }
+    }
+  },
+  "rules": [
+    {
+      "name": "💡 Apagar Luces - Sin Clientes",
+      "description": "Reducir iluminación cuando no hay personas (10 minutos)",
+      "condition": {
+        "and": [
+          {
+            "device_id": "TIENDA-MOT-001",
+            "operator": "==",
+            "value": 0,
+            "duration_seconds": 600
+          },
+          {
+            "time_range": ["10:00", "21:00"]
+          }
+        ]
+      },
+      "action": {
+        "type": "actuate",
+        "target": "LIGHT-ZONE-2",
+        "command": "dim",
+        "parameters": {
+          "level": 30
+        }
+      },
+      "priority": 5,
+      "is_active": true
+    },
+    {
+      "name": "💡 Encender Luces - Cliente Detectado",
+      "description": "Restaurar iluminación al detectar movimiento",
+      "condition": {
+        "device_id": "TIENDA-MOT-001",
+        "operator": ">",
+        "value": 0
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_lights",
+        "command": "on",
+        "parameters": {
+          "level": 100
+        }
+      },
+      "priority": 8
+    },
+    {
+      "name": "☀️ Control Luz Natural",
+      "description": "Ajustar iluminación según luz natural disponible",
+      "condition": {
+        "device_id": "TIENDA-LUX-001",
+        "operator": ">",
+        "value": 500,
+        "parameter": "natural_lux"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "LIGHT-ZONE-1",
+        "command": "dim",
+        "parameters": {
+          "level": 60
+        }
+      },
+      "priority": 4
+    },
+    {
+      "name": "❄️ Climatización Inteligente",
+      "description": "Ajustar temperatura según ocupación",
+      "condition": {
+        "and": [
+          {
+            "device_id": "TIENDA-TEMP-001",
+            "operator": ">",
+            "value": 24.0
+          },
+          {
+            "device_id": "TIENDA-MOT-001",
+            "operator": ">",
+            "value": 5,
+            "parameter": "count"
+          }
+        ]
+      },
+      "action": {
+        "type": "actuate",
+        "target": "HVAC-001",
+        "command": "cool",
+        "parameters": {
+          "setpoint": 22.0,
+          "fan_speed": "high"
+        }
+      },
+      "priority": 7
+    },
+    {
+      "name": "🌙 Modo Nocturno Automático",
+      "description": "Activar modo nocturno al cierre",
+      "condition": {
+        "time": "21:00",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_systems",
+        "command": "night_mode",
+        "parameters": {
+          "keep_vidriera": true,
+          "security_lights": true
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "🌅 Modo Apertura Automático",
+      "description": "Preparar tienda para apertura",
+      "condition": {
+        "time": "09:45",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "all_systems",
+        "command": "opening_mode",
+        "parameters": {
+          "lights": 100,
+          "hvac_temp": 22.0,
+          "vidriera_mode": "attractive"
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "📊 Alerta Flujo Alto",
+      "description": "Notificar cuando hay muchos clientes",
+      "condition": {
+        "device_id": "TIENDA-MOT-001",
+        "operator": ">",
+        "value": 20,
+        "parameter": "hourly_count"
+      },
+      "action": {
+        "type": "notify",
+        "channel": "staff",
+        "message": "📊 Flujo alto detectado: {value} clientes en la última hora. Considerar refuerzo."
+      },
+      "priority": 6
+    },
+    {
+      "name": "⚡ Ahorro Energético - Baja Ocupación",
+      "description": "Optimizar consumo en horarios de baja ocupación",
+      "condition": {
+        "and": [
+          {
+            "device_id": "TIENDA-MOT-001",
+            "operator": "<",
+            "value": 2,
+            "parameter": "count"
+          },
+          {
+            "time_range": ["14:00", "17:00"]
+          }
+        ]
+      },
+      "action": {
+        "type": "optimize",
+        "target": "energy_consumption",
+        "parameters": {
+          "lights_dim": 80,
+          "hvac_eco_mode": true
+        }
+      },
+      "priority": 5
+    },
+    {
+      "name": "📈 Reporte Diario de Flujo",
+      "description": "Generar análisis diario de visitantes",
+      "condition": {
+        "time": "21:30",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "report",
+        "format": "pdf",
+        "include": [
+          "total_visitors",
+          "peak_hour",
+          "conversion_estimate",
+          "section_popularity",
+          "energy_consumption_kwh",
+          "cost_savings_vs_manual"
+        ]
+      },
+      "priority": 7
+    },
+    {
+      "name": "🎨 Vidriera Dinámica Nocturna",
+      "description": "Cambiar iluminación vidriera para atraer",
+      "condition": {
+        "time_range": ["21:00", "23:00"],
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "actuate",
+        "target": "LIGHT-VIDRIERA",
+        "command": "dynamic_mode",
+        "parameters": {
+          "color_cycle": true,
+          "cycle_speed": "slow",
+          "brightness": 100
+        }
+      },
+      "priority": 3
+    }
+  ],
+  "energy_management": {
+    "baseline_consumption_kwh_day": 45,
+    "target_reduction_percentage": 30,
+    "peak_demand_limit_kw": 12,
+    "strategies": [
+      "dimming_based_on_natural_light",
+      "occupancy_based_hvac",
+      "led_lighting_optimization",
+      "off_peak_cooling_pre_cool"
+    ]
+  },
+  "integration": {
+    "pos_system": {
+      "enabled": true,
+      "sync_sales_data": true,
+      "correlate_with_traffic": true
+    },
+    "music_system": {
+      "volume_adjust_by_occupancy": true,
+      "playlist_by_time": true
+    },
+    "security_system": {
+      "motion_alerts_after_hours": true,
+      "camera_trigger_on_activity": true
+    }
+  },
+  "analytics_dashboard": {
+    "kpis": [
+      {
+        "name": "Visitors per Day",
+        "target": 150,
+        "unit": "people"
+      },
+      {
+        "name": "Peak Hour Traffic",
+        "target": 30,
+        "unit": "people/hour"
+      },
+      {
+        "name": "Energy Cost per Visitor",
+        "target": 50,
+        "unit": "ARS"
+      },
+      {
+        "name": "Fitting Room Conversion",
+        "target": 45,
+        "unit": "%"
+      },
+      {
+        "name": "Average Stay Time",
+        "target": 18,
+        "unit": "minutes"
+      }
+    ]
+  },
+  "metadata": {
+    "location": "Shopping Center - Local 234",
+    "city": "Buenos Aires",
+    "mall_traffic": "high",
+    "competition_nearby": true,
+    "target_demographic": "18-45 years",
+    "installation_date": "2025-01-10"
+  }
+}

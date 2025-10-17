@@ -1,0 +1,284 @@
+{
+  "scenario_name": "Centro Médico - Sistema Completo de Turnos",
+  "description": "Sistema integral de gestión de turnos médicos con confirmación automática",
+  "rubro": "centro_medico",
+  "duration_seconds": 43200,
+  "services": [
+    {
+      "service_id": "SERV-001",
+      "name": "Consulta Médica General",
+      "duration_minutes": 30,
+      "price": 3500,
+      "doctor": "Dr. Juan Rodríguez",
+      "specialty": "Medicina General",
+      "room": "Consultorio 1"
+    },
+    {
+      "service_id": "SERV-002",
+      "name": "Odontología",
+      "duration_minutes": 45,
+      "price": 4500,
+      "doctor": "Dra. Ana Martínez",
+      "specialty": "Odontología",
+      "room": "Consultorio 2"
+    },
+    {
+      "service_id": "SERV-003",
+      "name": "Kinesiología",
+      "duration_minutes": 60,
+      "price": 4000,
+      "doctor": "Lic. Carlos Gómez",
+      "specialty": "Kinesiología",
+      "room": "Sala de Kinesiología"
+    },
+    {
+      "service_id": "SERV-004",
+      "name": "Nutrición",
+      "duration_minutes": 45,
+      "price": 3800,
+      "doctor": "Lic. María López",
+      "specialty": "Nutrición",
+      "room": "Consultorio 3"
+    },
+    {
+      "service_id": "SERV-005",
+      "name": "Psicología",
+      "duration_minutes": 50,
+      "price": 5000,
+      "doctor": "Lic. Roberto Fernández",
+      "specialty": "Psicología",
+      "room": "Consultorio 4"
+    },
+    {
+      "service_id": "SERV-006",
+      "name": "Cardiología",
+      "duration_minutes": 40,
+      "price": 6000,
+      "doctor": "Dr. Laura Sánchez",
+      "specialty": "Cardiología",
+      "room": "Consultorio 5"
+    },
+    {
+      "service_id": "SERV-007",
+      "name": "Pediatría",
+      "duration_minutes": 30,
+      "price": 4200,
+      "doctor": "Dra. Silvia Torres",
+      "specialty": "Pediatría",
+      "room": "Consultorio Pediátrico"
+    },
+    {
+      "service_id": "SERV-008",
+      "name": "Dermatología",
+      "duration_minutes": 35,
+      "price": 5500,
+      "doctor": "Dr. Miguel Ríos",
+      "specialty": "Dermatología",
+      "room": "Consultorio 6"
+    }
+  ],
+  "schedule": {
+    "monday": {
+      "start": "08:00",
+      "end": "18:00",
+      "available_services": ["SERV-001", "SERV-002", "SERV-003", "SERV-004", "SERV-005", "SERV-006"]
+    },
+    "tuesday": {
+      "start": "08:00",
+      "end": "18:00",
+      "available_services": ["SERV-001", "SERV-002", "SERV-003", "SERV-004", "SERV-007"]
+    },
+    "wednesday": {
+      "start": "08:00",
+      "end": "20:00",
+      "available_services": ["SERV-001", "SERV-002", "SERV-005", "SERV-006", "SERV-008"]
+    },
+    "thursday": {
+      "start": "08:00",
+      "end": "18:00",
+      "available_services": ["SERV-001", "SERV-003", "SERV-004", "SERV-007", "SERV-008"]
+    },
+    "friday": {
+      "start": "08:00",
+      "end": "16:00",
+      "available_services": ["SERV-001", "SERV-002", "SERV-006", "SERV-007"]
+    },
+    "saturday": {
+      "start": "09:00",
+      "end": "13:00",
+      "available_services": ["SERV-001", "SERV-007"]
+    }
+  },
+  "notification_templates": {
+    "confirmation": {
+      "whatsapp": "✅ *Turno Confirmado*\n\n📅 Fecha: {date}\n⏰ Hora: {time}\n👨‍⚕️ Profesional: {doctor}\n🏥 Servicio: {service}\n📍 Consultorio: {room}\n\n⚠️ Por favor llegar 10 min antes.\n\nCentro Médico Salud Integral\n📞 (011) 4567-8900",
+      "email": {
+        "subject": "Confirmación de Turno - Centro Médico Salud Integral",
+        "body": "Estimado/a {patient_name},\n\nSu turno ha sido confirmado con los siguientes datos:\n\nFecha: {date}\nHora: {time}\nProfesional: {doctor}\nServicio: {service}\nConsultorio: {room}\nDuración aproximada: {duration} minutos\n\nPor favor presentarse 10 minutos antes de la hora asignada.\n\nSaludos cordiales,\nCentro Médico Salud Integral"
+      }
+    },
+    "reminder": {
+      "whatsapp": "⏰ *Recordatorio de Turno*\n\nHola {patient_name}, le recordamos su turno:\n\n📅 Mañana {date}\n⏰ {time} hs\n👨‍⚕️ {doctor}\n\nPara cancelar, responda CANCELAR.\n\nGracias!",
+      "sms": "Recordatorio: Turno mañana {date} {time}hs con {doctor}. Centro Médico Salud Integral."
+    },
+    "cancellation": {
+      "whatsapp": "❌ *Turno Cancelado*\n\nSu turno del {date} a las {time}hs ha sido cancelado.\n\nPara reagendar, llamenos al (011) 4567-8900.\n\nGracias!"
+    }
+  },
+  "devices": [
+    {
+      "device_id": "MED-TEMP-001",
+      "name": "Temperatura Sala Espera",
+      "device_type": "temperature",
+      "location": "Sala de Espera",
+      "config": {
+        "base_temp": 22.0,
+        "amplitude": 2.0,
+        "period": 7200
+      }
+    },
+    {
+      "device_id": "MED-MOT-001",
+      "name": "Contador Pacientes",
+      "device_type": "motion",
+      "location": "Recepción",
+      "config": {
+        "peak_probability": 0.3,
+        "business_hours": [8, 18]
+      }
+    },
+    {
+      "device_id": "MED-PRES-001",
+      "name": "Tensiómetro Digital Consultorio 1",
+      "device_type": "pressure",
+      "location": "Consultorio 1",
+      "config": {
+        "systolic_range": [110, 140],
+        "diastolic_range": [70, 90]
+      }
+    }
+  ],
+  "rules": [
+    {
+      "name": "📱 Confirmación Automática WhatsApp",
+      "description": "Enviar confirmación al agendar turno",
+      "condition": {
+        "event": "appointment_created",
+        "trigger": "immediate"
+      },
+      "action": {
+        "type": "notify",
+        "channel": "whatsapp",
+        "template": "confirmation",
+        "recipient": "{patient_phone}"
+      },
+      "priority": 10,
+      "is_active": true
+    },
+    {
+      "name": "⏰ Recordatorio 24h Antes",
+      "description": "Recordar turno un día antes",
+      "condition": {
+        "event": "appointment_reminder",
+        "hours_before": 24
+      },
+      "action": {
+        "type": "notify",
+        "channel": "whatsapp",
+        "template": "reminder"
+      },
+      "priority": 8
+    },
+    {
+      "name": "⚠️ Capacidad Sala Espera",
+      "description": "Alertar si hay muchas personas esperando",
+      "condition": {
+        "device_id": "MED-MOT-001",
+        "operator": ">",
+        "value": 20,
+        "parameter": "count"
+      },
+      "action": {
+        "type": "alert",
+        "severity": "warning",
+        "message": "⚠️ Sala de espera con alta ocupación: {value} personas"
+      },
+      "priority": 5
+    },
+    {
+      "name": "❌ Turno No Presentado",
+      "description": "Registrar ausencia después de 15 minutos",
+      "condition": {
+        "event": "appointment_no_show",
+        "minutes_after": 15
+      },
+      "action": {
+        "type": "log",
+        "message": "Paciente {patient_name} no se presentó a turno {appointment_id}"
+      },
+      "priority": 3
+    },
+    {
+      "name": "📊 Reporte Diario Turnos",
+      "description": "Generar reporte al final del día",
+      "condition": {
+        "time": "20:00",
+        "type": "scheduled"
+      },
+      "action": {
+        "type": "report",
+        "format": "pdf",
+        "include": [
+          "turnos_totales",
+          "turnos_cumplidos",
+          "turnos_cancelados",
+          "no_presentados",
+          "servicios_mas_solicitados",
+          "facturacion_diaria"
+        ]
+      },
+      "priority": 7
+    }
+  ],
+  "appointment_simulation": {
+    "daily_appointments": {
+      "monday": 45,
+      "tuesday": 40,
+      "wednesday": 50,
+      "thursday": 42,
+      "friday": 38,
+      "saturday": 20
+    },
+    "popular_times": ["09:00", "10:00", "16:00", "17:00"],
+    "cancellation_rate": 0.08,
+    "no_show_rate": 0.05
+  },
+  "integration": {
+    "obra_social": [
+      {
+        "name": "OSDE",
+        "coverage": 0.80,
+        "requires_auth": true
+      },
+      {
+        "name": "Swiss Medical",
+        "coverage": 0.75,
+        "requires_auth": true
+      },
+      {
+        "name": "Galeno",
+        "coverage": 0.70,
+        "requires_auth": false
+      }
+    ],
+    "payment_methods": ["efectivo", "tarjeta_debito", "tarjeta_credito", "transferencia", "mercadopago"]
+  },
+  "metadata": {
+    "business_name": "Centro Médico Salud Integral",
+    "address": "Av. Corrientes 1234, CABA",
+    "phone": "+54 11 4567-8900",
+    "email": "turnos@centromedico.com.ar",
+    "website": "www.centromedico.com.ar",
+    "license": "Habilitación Municipal 12345"
+  }
+}
